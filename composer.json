@@ -1,6 +1,6 @@
 {
 	"name": "trejjam/base-extension",
-	"description": "Send defined email templates",
+	"description": "Base DI extension package",
 	"keywords": [
 		"nette",
 		"base extension"
