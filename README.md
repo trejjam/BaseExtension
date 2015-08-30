@@ -1,0 +1,1 @@
+Base extension==============Installation------------The best way to install Trejjam/BaseExtension is using  [Composer](http://getcomposer.org/):```sh$ composer require trejjam/base-extension```
