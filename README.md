@@ -1,1 +1,1 @@
-Base extension==============Installation------------The best way to install Trejjam/BaseExtension is using  [Composer](http://getcomposer.org/):```sh$ composer require trejjam/base-extension```
+Base extension==============[![Latest stable](https://img.shields.io/packagist/v/trejjam/base-extension.svg)](https://packagist.org/packages/trejjam/base-extension)Installation------------The best way to install Trejjam/BaseExtension is using  [Composer](http://getcomposer.org/):```sh$ composer require trejjam/base-extension```
