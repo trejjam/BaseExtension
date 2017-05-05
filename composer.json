@@ -1,13 +1,11 @@
 {
 	"name": "trejjam/base-extension",
-	"description": "Base DI extension package",
+	"description": "Simple Nette extension helper",
 	"keywords": [
 		"nette",
 		"base extension"
 	],
-	"license": [
-		"MIT"
-	],
+	"license": "MIT",
 	"authors": [
 		{
 			"name": "Jan Trejbal"
@@ -24,10 +22,7 @@
 	"autoload": {
 		"psr-4": {
 			"Trejjam\\BaseExtension\\": "src/"
-		},
-		"classmap": [
-			"src/exceptions.php"
-		]
+		}
 	},
 	"extra": {
 		"branch-alias": {
