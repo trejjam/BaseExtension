@@ -3,27 +3,32 @@ declare(strict_types=1);
 
 namespace Trejjam\BaseExtension\DI;
 
-use Nette;
-use Trejjam;
+use Nette\DI\CompilerExtension;
+use Nette\DI\MissingServiceException;
+use Nette\DI\ServiceDefinition;
+use Nette\InvalidArgumentException;
+use Nette\InvalidStateException;
+use Nette\Utils\AssertionException;
+use Nette\Utils\Validators;
 
-abstract class BaseExtension extends Nette\DI\CompilerExtension
+abstract class BaseExtension extends CompilerExtension
 {
 	protected $default = [];
 
 	/**
-	 * @var Nette\DI\ServiceDefinition[]
+	 * @var ServiceDefinition[]
 	 */
 	protected $classesDefinition = [];
 
 	/**
-	 * @var Nette\DI\ServiceDefinition[]
+	 * @var ServiceDefinition[]
 	 */
 	protected $factoriesDefinition = [];
 
 	/**
 	 * @return array
-	 * @throws Nette\InvalidStateException
-	 * @throws Nette\Utils\AssertionException
+	 * @throws InvalidStateException
+	 * @throws AssertionException
 	 *
 	 * @deprecated
 	 */
@@ -31,15 +36,15 @@ abstract class BaseExtension extends Nette\DI\CompilerExtension
 	{
 		$config = $this->validateConfig($this->default);
 
-		Nette\Utils\Validators::assert($config, 'array');
+		Validators::assert($config, 'array');
 
 		return $config;
 	}
 
 	/**
-	 * @return Nette\DI\ServiceDefinition[]
-	 * @throws Nette\InvalidArgumentException
-	 * @throws Nette\InvalidStateException
+	 * @return ServiceDefinition[]
+	 * @throws InvalidArgumentException
+	 * @throws InvalidStateException
 	 */
 	protected function registerTypes() : array
 	{
@@ -47,16 +52,16 @@ abstract class BaseExtension extends Nette\DI\CompilerExtension
 
 		$classes = [];
 		foreach ($this->classesDefinition as $k => $v) {
-			$classes[$k] = $builder->addDefinition($this->prefix($k))
-								   ->setType($v);
+			$classes[$k] = $builder->addDefinition($this->prefix($k));
+			$classes[$k]->setType($v);
 		}
 
 		return $classes;
 	}
 
 	/**
-	 * @return Nette\DI\ServiceDefinition[]
-	 * @throws Nette\DI\MissingServiceException
+	 * @return ServiceDefinition[]
+	 * @throws MissingServiceException
 	 *
 	 * @deprecated
 	 */
@@ -66,8 +71,8 @@ abstract class BaseExtension extends Nette\DI\CompilerExtension
 	}
 
 	/**
-	 * @return Nette\DI\ServiceDefinition[]
-	 * @throws Nette\DI\MissingServiceException
+	 * @return ServiceDefinition[]
+	 * @throws MissingServiceException
 	 */
 	protected function getTypes() : array
 	{
@@ -82,9 +87,9 @@ abstract class BaseExtension extends Nette\DI\CompilerExtension
 	}
 
 	/**
-	 * @return Nette\DI\ServiceDefinition[]
-	 * @throws Nette\InvalidArgumentException
-	 * @throws Nette\InvalidStateException
+	 * @return ServiceDefinition[]
+	 * @throws InvalidArgumentException
+	 * @throws InvalidStateException
 	 */
 	protected function registerFactories() : array
 	{
@@ -92,16 +97,16 @@ abstract class BaseExtension extends Nette\DI\CompilerExtension
 
 		$factories = [];
 		foreach ($this->factoriesDefinition as $k => $v) {
-			$factories[$k] = $builder->addDefinition($this->prefix($k))
-									 ->setImplement($v);
+			$factories[$k] = $builder->addDefinition($this->prefix($k));
+			$factories[$k]->setImplement($v);
 		}
 
 		return $factories;
 	}
 
 	/**
-	 * @return Nette\DI\ServiceDefinition[]
-	 * @throws Nette\DI\MissingServiceException
+	 * @return ServiceDefinition[]
+	 * @throws MissingServiceException
 	 */
 	protected function getFactories() : array
 	{
