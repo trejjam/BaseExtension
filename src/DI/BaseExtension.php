@@ -16,12 +16,12 @@ abstract class BaseExtension extends CompilerExtension
 	protected $default = [];
 
 	/**
-	 * @var ServiceDefinition[]
+	 * @var string[]
 	 */
 	protected $classesDefinition = [];
 
 	/**
-	 * @var ServiceDefinition[]
+	 * @var string[]
 	 */
 	protected $factoriesDefinition = [];
 
@@ -50,13 +50,13 @@ abstract class BaseExtension extends CompilerExtension
 	{
 		$builder = $this->getContainerBuilder();
 
-		$classes = [];
+		$types = [];
 		foreach ($this->classesDefinition as $k => $v) {
-			$classes[$k] = $builder->addDefinition($this->prefix($k));
-			$classes[$k]->setType($v);
+			$types[$k] = $builder->addDefinition($this->prefix($k))
+				->setType($v);
 		}
 
-		return $classes;
+		return $types;
 	}
 
 	/**
@@ -97,8 +97,16 @@ abstract class BaseExtension extends CompilerExtension
 
 		$factories = [];
 		foreach ($this->factoriesDefinition as $k => $v) {
-			$factories[$k] = $builder->addDefinition($this->prefix($k));
-			$factories[$k]->setImplement($v);
+			if (method_exists($builder, 'addFactoryDefinition')) {
+				$factories[$k] = $builder->addFactoryDefinition($this->prefix($k))
+					->setImplement($v)
+					->getResultDefinition();
+			} else {
+				$factories[$k] = $builder->addDefinition($this->prefix($k))
+					->setImplement($v);
+			}
+
+			$factories[$k];
 		}
 
 		return $factories;

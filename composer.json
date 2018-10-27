@@ -13,8 +13,8 @@
 	],
 	"require": {
 		"php": ">=7.1",
-		"nette/di": "~2.3",
-		"nette/utils": "~2.3"
+		"nette/di": "~2.3 || ^3.0@beta",
+		"nette/utils": "~2.3 || ^3.0@beta"
 	},
 	"require-dev": {
 		"nette/tester": "@dev"
