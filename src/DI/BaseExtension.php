@@ -5,7 +5,7 @@ namespace Trejjam\BaseExtension\DI;
 
 use Nette\DI\CompilerExtension;
 use Nette\DI\MissingServiceException;
-use Nette\DI\ServiceDefinition;
+use Nette\DI\Definitions\ServiceDefinition;
 use Nette\InvalidArgumentException;
 use Nette\InvalidStateException;
 use Nette\Utils\AssertionException;
@@ -13,128 +13,121 @@ use Nette\Utils\Validators;
 
 abstract class BaseExtension extends CompilerExtension
 {
-	protected $default = [];
+    protected $default = [];
 
-	/**
-	 * @var string[]
-	 */
-	protected $classesDefinition = [];
+    /**
+     * @var string[]
+     */
+    protected $classesDefinition = [];
 
-	/**
-	 * @var string[]
-	 */
-	protected $factoriesDefinition = [];
+    /**
+     * @var string[]
+     */
+    protected $factoriesDefinition = [];
 
-	/**
-	 * @return array
-	 * @throws InvalidStateException
-	 * @throws AssertionException
-	 *
-	 * @deprecated
-	 */
-	protected function createConfig() : array
-	{
-		$config = $this->validateConfig($this->default);
+    /**
+     * @return array
+     * @throws InvalidStateException
+     * @throws AssertionException
+     *
+     * @deprecated
+     */
+    protected function createConfig() : array
+    {
+        $config = $this->validateConfig($this->default);
 
-		Validators::assert($config, 'array');
+        Validators::assert($config, 'array');
 
-		return $config;
-	}
+        return $config;
+    }
 
-	/**
-	 * @return ServiceDefinition[]
-	 * @throws InvalidArgumentException
-	 * @throws InvalidStateException
-	 */
-	protected function registerTypes() : array
-	{
-		$builder = $this->getContainerBuilder();
+    /**
+     * @return ServiceDefinition[]
+     * @throws InvalidArgumentException
+     * @throws InvalidStateException
+     */
+    protected function registerTypes() : array
+    {
+        $builder = $this->getContainerBuilder();
 
-		$types = [];
-		foreach ($this->classesDefinition as $k => $v) {
-			$types[$k] = $builder->addDefinition($this->prefix($k))
-				->setType($v);
-		}
+        $types = [];
+        foreach ($this->classesDefinition as $k => $v) {
+            $types[$k] = $builder->addDefinition($this->prefix($k))
+                ->setType($v);
+        }
 
-		return $types;
-	}
+        return $types;
+    }
 
-	/**
-	 * @return ServiceDefinition[]
-	 * @throws MissingServiceException
-	 *
-	 * @deprecated
-	 */
-	protected function getClasses() : array
-	{
-		return $this->getTypes();
-	}
+    /**
+     * @return ServiceDefinition[]
+     * @throws MissingServiceException
+     *
+     * @deprecated
+     */
+    protected function getClasses() : array
+    {
+        return $this->getTypes();
+    }
 
-	/**
-	 * @return ServiceDefinition[]
-	 * @throws MissingServiceException
-	 */
-	protected function getTypes() : array
-	{
-		$builder = $this->getContainerBuilder();
+    /**
+     * @return ServiceDefinition[]
+     * @throws MissingServiceException
+     */
+    protected function getTypes() : array
+    {
+        $builder = $this->getContainerBuilder();
 
-		$classes = [];
-		foreach ($this->classesDefinition as $k => $v) {
-			$classes[$k] = $builder->getDefinition($this->prefix($k));
-		}
+        $classes = [];
+        foreach ($this->classesDefinition as $k => $v) {
+            $classes[$k] = $builder->getDefinition($this->prefix($k));
+        }
 
-		return $classes;
-	}
+        return $classes;
+    }
 
-	/**
-	 * @return ServiceDefinition[]
-	 * @throws InvalidArgumentException
-	 * @throws InvalidStateException
-	 */
-	protected function registerFactories() : array
-	{
-		$builder = $this->getContainerBuilder();
+    /**
+     * @return ServiceDefinition[]
+     * @throws InvalidArgumentException
+     * @throws InvalidStateException
+     */
+    protected function registerFactories() : array
+    {
+        $builder = $this->getContainerBuilder();
 
-		$factories = [];
-		foreach ($this->factoriesDefinition as $k => $v) {
-			if (method_exists($builder, 'addFactoryDefinition')) {
-				$factories[$k] = $builder->addFactoryDefinition($this->prefix($k))
-					->setImplement($v)
-					->getResultDefinition();
-			} else {
-				$factories[$k] = $builder->addDefinition($this->prefix($k))
-					->setImplement($v);
-			}
+        $factories = [];
+        foreach ($this->factoriesDefinition as $k => $v) {
+            $factories[$k] = $builder->addFactoryDefinition($this->prefix($k))
+                ->setImplement($v)
+                ->getResultDefinition();
+        }
 
-			$factories[$k];
-		}
+        return $factories;
+    }
 
-		return $factories;
-	}
+    /**
+     * @return ServiceDefinition[]
+     * @throws MissingServiceException
+     */
+    protected function getFactories() : array
+    {
+        $builder = $this->getContainerBuilder();
 
-	/**
-	 * @return ServiceDefinition[]
-	 * @throws MissingServiceException
-	 */
-	protected function getFactories() : array
-	{
-		$builder = $this->getContainerBuilder();
+        $factories = [];
+        foreach ($this->factoriesDefinition as $k => $v) {
+            $factories[$k] = $builder->getDefinition($this->prefix($k));
+        }
 
-		$factories = [];
-		foreach ($this->factoriesDefinition as $k => $v) {
-			$factories[$k] = $builder->getDefinition($this->prefix($k));
-		}
+        return $factories;
+    }
 
-		return $factories;
-	}
+    public function loadConfiguration(bool $validateConfig = TRUE) : void
+    {
+        if ($validateConfig) {
+            $this->validateConfig($this->default);
+        }
 
-	public function loadConfiguration(bool $validateConfig = TRUE) : void
-	{
-		if ($validateConfig) {
-			$this->validateConfig($this->default);
-		}
-
-		$this->registerTypes();
-		$this->registerFactories();
-	}
+        $this->registerTypes();
+        $this->registerFactories();
+    }
 }
